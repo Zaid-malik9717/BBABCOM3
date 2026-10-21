@@ -37,12 +37,10 @@ export function initDb() {
 export async function persistDb() {
   writeQueue = writeQueue.then(async () => {
     try {
-      const tempPath = `${DB_FILE}.tmp`;
       const jsonContent = JSON.stringify(dbMemory, null, 2);
-      await fs.promises.writeFile(tempPath, jsonContent, 'utf-8');
-      await fs.promises.rename(tempPath, DB_FILE);
+      await fs.promises.writeFile(DB_FILE, jsonContent, 'utf-8');
     } catch (err) {
-      console.error('Failed to persist database to file:', err);
+      console.warn('Database write to disk skipped (in-memory state preserved):', err.message);
     }
   });
   return writeQueue;

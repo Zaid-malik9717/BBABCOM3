@@ -1,4 +1,5 @@
-const BASE_URL = '/api';
+const RAW_BASE = import.meta.env.VITE_API_URL || '/api';
+const BASE_URL = RAW_BASE.endsWith('/') ? RAW_BASE.slice(0, -1) : RAW_BASE;
 
 async function request(endpoint, options = {}) {
   const url = `${BASE_URL}${endpoint}`;
@@ -12,10 +13,18 @@ async function request(endpoint, options = {}) {
 
   try {
     const response = await fetch(url, config);
-    const data = await response.json();
+    const contentType = response.headers.get('content-type') || '';
+    let data;
+
+    if (contentType.includes('application/json')) {
+      data = await response.json();
+    } else {
+      const text = await response.text();
+      data = { message: text || `HTTP error! status: ${response.status}` };
+    }
 
     if (!response.ok) {
-      throw new Error(data.message || `HTTP error! status: ${response.status}`);
+      throw new Error(data?.message || `HTTP error! status: ${response.status}`);
     }
 
     return data;

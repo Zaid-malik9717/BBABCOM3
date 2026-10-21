@@ -7,17 +7,17 @@ export const assignmentsController = {
       let items = db.get('assignments');
 
       if (status) {
-        items = items.filter((a) => a.status.toLowerCase() === status.toLowerCase());
+        items = items.filter((a) => a.status?.toLowerCase() === status.toLowerCase());
       }
       if (course) {
-        items = items.filter((a) => a.course.toLowerCase() === course.toLowerCase());
+        items = items.filter((a) => a.course?.toLowerCase() === course.toLowerCase());
       }
       if (search) {
         const query = search.toLowerCase();
         items = items.filter(
           (a) =>
-            a.title.toLowerCase().includes(query) ||
-            a.course.toLowerCase().includes(query) ||
+            a.title?.toLowerCase().includes(query) ||
+            a.course?.toLowerCase().includes(query) ||
             a.instructor?.toLowerCase().includes(query)
         );
       }
@@ -80,7 +80,8 @@ export const assignmentsController = {
 
   updateAssignment: async (req, res, next) => {
     try {
-      const updated = await db.update('assignments', req.params.id, req.body);
+      const { id: _id, ...safeUpdates } = req.body;
+      const updated = await db.update('assignments', req.params.id, safeUpdates);
       if (!updated) {
         return res.status(404).json({ success: false, message: 'Assignment not found' });
       }

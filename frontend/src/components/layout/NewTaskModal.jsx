@@ -104,8 +104,7 @@ export default function NewTaskModal() {
                 value={due}
                 onChange={(e) => setDue(e.target.value)}
                 className="w-full px-3 py-2 rounded-xl border border-surface-container-highest dark:border-outline/30 bg-surface-container-lowest dark:bg-inverse-surface text-on-surface dark:text-inverse-on-surface text-sm focus:outline-none focus:ring-2 focus:ring-primary shadow-sm"
-              >
-              </input>
+              />
             </div>
 
             <div>

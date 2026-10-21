@@ -38,7 +38,8 @@ export const goalsController = {
 
   updateMilestone: async (req, res, next) => {
     try {
-      const updated = await db.update('milestones', req.params.id, req.body);
+      const { id: _id, ...safeUpdates } = req.body;
+      const updated = await db.update('milestones', req.params.id, safeUpdates);
       if (!updated) {
         return res.status(404).json({ success: false, message: 'Milestone not found' });
       }

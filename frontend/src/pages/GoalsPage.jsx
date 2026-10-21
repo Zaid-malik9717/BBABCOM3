@@ -8,7 +8,6 @@ export default function GoalsPage() {
   const [newTitle, setNewTitle] = useState('');
   const [newTag, setNewTag] = useState('Academic');
   const [newDue, setNewDue] = useState('Next Month');
-  const [newProgress, setNewProgress] = useState('0%');
 
   useEffect(() => {
     async function loadGoals() {
@@ -35,7 +34,7 @@ export default function GoalsPage() {
         title: newTitle.trim(),
         tag: newTag,
         due: newDue,
-        progress: newProgress,
+        progress: '0%',
         percent: 0,
       });
       if (res?.data) {

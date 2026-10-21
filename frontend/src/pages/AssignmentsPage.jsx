@@ -218,10 +218,20 @@ export default function AssignmentsPage() {
               Active & Urgent Coursework
             </h2>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              {assignments
-                .filter((a) => a.status === 'pending')
-                .map((item) => (
+            {loading ? (
+              <div className="p-8 text-center text-sm text-on-surface-variant flex items-center justify-center gap-2 bg-surface dark:bg-surface-dim rounded-2xl border border-surface-container-high dark:border-outline/20">
+                <span className="material-symbols-outlined animate-spin text-primary">progress_activity</span>
+                <span>Loading coursework...</span>
+              </div>
+            ) : assignments.filter((a) => a.status === 'pending').length === 0 ? (
+              <div className="p-6 bg-surface dark:bg-surface-dim rounded-2xl text-center text-xs text-on-surface-variant dark:text-outline-variant border border-surface-container-high dark:border-outline/20">
+                No active or urgent coursework pending. You're completely caught up!
+              </div>
+            ) : (
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                {assignments
+                  .filter((a) => a.status === 'pending')
+                  .map((item) => (
                   <div
                     key={item.id}
                     className="bg-surface dark:bg-surface-dim rounded-2xl p-5 shadow-z1 border border-secondary/20 hover:border-secondary/40 transition-all flex flex-col justify-between relative overflow-hidden"
@@ -275,7 +285,8 @@ export default function AssignmentsPage() {
                     </div>
                   </div>
                 ))}
-            </div>
+              </div>
+            )}
           </section>
 
           {/* All Coursework Table */}
@@ -315,44 +326,59 @@ export default function AssignmentsPage() {
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-surface-container-high dark:divide-outline/10">
-                  {filtered.map((item) => (
-                    <tr key={item.id} className="hover:bg-surface-container-low/60 transition-colors">
-                      <td className="py-3 font-bold text-primary dark:text-primary-fixed">
-                        {item.course}
-                      </td>
-                      <td className="py-3 font-semibold text-on-surface dark:text-inverse-on-surface">
-                        {item.title}
-                      </td>
-                      <td className="py-3 text-on-surface-variant dark:text-outline-variant">
-                        {item.due}
-                      </td>
-                      <td className="py-3">
-                        <span
-                          className={`px-2.5 py-1 rounded-full text-[11px] font-bold ${
-                            item.status === 'submitted'
-                              ? 'bg-emerald-500/15 text-emerald-600 dark:text-emerald-400'
-                              : 'bg-secondary/15 text-secondary'
-                          }`}
-                        >
-                          {item.status === 'submitted' ? 'Submitted' : 'Pending'}
-                        </span>
-                      </td>
-                      <td className="py-3 font-medium text-on-surface-variant dark:text-outline-variant">
-                        {item.grade || '—'}
-                      </td>
-                      <td className="py-3 text-right">
-                        {item.status === 'pending' && (
-                          <button
-                            onClick={() => handleSubmitting(item.id, item.title)}
-                            disabled={submittingId === item.id}
-                            className="text-xs text-primary hover:underline font-semibold"
-                          >
-                            Mark Submit
-                          </button>
-                        )}
+                  {loading ? (
+                    <tr>
+                      <td colSpan="6" className="py-8 text-center text-on-surface-variant dark:text-outline-variant">
+                        <span className="material-symbols-outlined animate-spin text-primary inline-block align-middle mr-2">progress_activity</span>
+                        <span>Loading coursework table...</span>
                       </td>
                     </tr>
-                  ))}
+                  ) : filtered.length === 0 ? (
+                    <tr>
+                      <td colSpan="6" className="py-8 text-center text-xs text-on-surface-variant dark:text-outline-variant">
+                        No coursework matching this category.
+                      </td>
+                    </tr>
+                  ) : (
+                    filtered.map((item) => (
+                      <tr key={item.id} className="hover:bg-surface-container-low/60 transition-colors">
+                        <td className="py-3 font-bold text-primary dark:text-primary-fixed">
+                          {item.course}
+                        </td>
+                        <td className="py-3 font-semibold text-on-surface dark:text-inverse-on-surface">
+                          {item.title}
+                        </td>
+                        <td className="py-3 text-on-surface-variant dark:text-outline-variant">
+                          {item.due}
+                        </td>
+                        <td className="py-3">
+                          <span
+                            className={`px-2.5 py-1 rounded-full text-[11px] font-bold ${
+                              item.status === 'submitted'
+                                ? 'bg-emerald-500/15 text-emerald-600 dark:text-emerald-400'
+                                : 'bg-secondary/15 text-secondary'
+                            }`}
+                          >
+                            {item.status === 'submitted' ? 'Submitted' : 'Pending'}
+                          </span>
+                        </td>
+                        <td className="py-3 font-medium text-on-surface-variant dark:text-outline-variant">
+                          {item.grade || '—'}
+                        </td>
+                        <td className="py-3 text-right">
+                          {item.status === 'pending' && (
+                            <button
+                              onClick={() => handleSubmitting(item.id, item.title)}
+                              disabled={submittingId === item.id}
+                              className="text-xs text-primary hover:underline font-semibold"
+                            >
+                              Mark Submit
+                            </button>
+                          )}
+                        </td>
+                      </tr>
+                    ))
+                  )}
                 </tbody>
               </table>
             </div>

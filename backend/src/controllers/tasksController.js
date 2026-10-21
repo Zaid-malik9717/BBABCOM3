@@ -7,7 +7,7 @@ export const tasksController = {
       let tasks = db.get('tasks');
 
       if (priority) {
-        tasks = tasks.filter((t) => t.priority.toLowerCase() === priority.toLowerCase());
+        tasks = tasks.filter((t) => t.priority?.toLowerCase() === priority.toLowerCase());
       }
       if (typeof completed !== 'undefined') {
         const isCompleted = completed === 'true' || completed === '1';
@@ -76,7 +76,8 @@ export const tasksController = {
 
   updateTask: async (req, res, next) => {
     try {
-      const updated = await db.update('tasks', req.params.id, req.body);
+      const { id: _id, ...safeUpdates } = req.body;
+      const updated = await db.update('tasks', req.params.id, safeUpdates);
       if (!updated) {
         return res.status(404).json({ success: false, message: 'Task not found' });
       }

@@ -71,7 +71,7 @@ export const timetableController = {
   updateClass: async (req, res, next) => {
     try {
       const { id } = req.params;
-      const { day, ...updates } = req.body;
+      const { day, id: _id, ...updates } = req.body;
       const timetable = db.get('timetable') || {};
 
       let found = false;
